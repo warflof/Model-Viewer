@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Présentation 3D – ModelViewer</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    html, body { margin:0; height:100%; background:#000; }
+    model-viewer {
+      width:100vw; height:100vh;
+      --poster-color: transparent;
+      --progress-bar-color:#ffc107;
+      background:#000;
+    }
+  </style>
+</head>
+<body>
+  <model-viewer
+    src="HallRender.glb"
+    alt="Modèle 3D"
+    camera-controls
+    auto-rotate
+    auto-rotate-delay="500"
+    rotation-per-second="10deg"
+    interaction-prompt="none"
+    exposure="1.1"
+    shadow-intensity="1"
+    shadow-softness="0.8"
+    environment-image="modern-office-studio-hdri_2K_21c7fab8-1244-4eea-8305-332cce35a0d4.hdr"
+    skybox-image="modern-office-studio-hdri_2K_21c7fab8-1244-4eea-8305-332cce35a0d4.hdr"
+    tone-mapping="neutral"
+    camera-orbit="0deg 75deg 105%"
+    field-of-view="40deg">
+  </model-viewer>
+
+  <script type="module">
+    // Setup "spotlight" 3 points en JS (fonctionne dans la vue web)
+    const mv = document.querySelector('model-viewer');
+    mv.addEventListener('load', () => {
+      const { THREE } = window;
+      const { model } = mv;
+
+      // Nettoie d'éventuelles lights déjà présentes
+      [...model.scene.children].forEach(n => {
+        if (n.isLight) model.scene.remove(n);
+      });
+
+      const key  = new THREE.DirectionalLight('#f1d6b8', 2.0); key.position.set( 0,  1, -1);
+      const fill = new THREE.DirectionalLight(0xb8cfff, 1.2); fill.position.set(-1,  0.5, 1);
+      const rim  = new THREE.DirectionalLight(0xff9966, 0.9); rim.position.set( 1,  0.2, 1);
+
+      model.scene.add(key, fill, rim);
+    });
+  </script>
+</body>
+</html>
